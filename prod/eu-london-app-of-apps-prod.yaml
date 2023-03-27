@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    path: charts/apps
+    repoURL: https://github.com/DanielOfir/application-charts
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+      - values-prod.yaml
+      - configs/prod/us-nvirginia-prod.yaml
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
